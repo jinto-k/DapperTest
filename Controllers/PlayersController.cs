@@ -30,10 +30,23 @@ namespace DapperTest.Controllers
         }
 
         [HttpGet("{id}")]
-        public async Task<ActionResult<Player>>GetPlayerById(int id)
+        public async Task<ActionResult<Player>> GetPlayerById(int id)
         {
             using var connection = new SqlConnection(_config.GetConnectionString("DefaultConnection"));
-            var player = await connection.QueryFirstAsync<Player>("Select * from Employee where Id = @Id", new { Id = id });
+            IEnumerable<Player> player = await connection.QueryAsync<Player>("Select * from Employee where Id in @Id and Age =@Age",
+                new { Id = id});
+            return Ok(player);
+        }
+        [HttpGet("{id}/{age}")]
+        public async Task<ActionResult<Player>> GetPlayerByIdAndAge(int id, int age)
+        {
+            using var connection = new SqlConnection(_config.GetConnectionString("DefaultConnection"));
+            IEnumerable<Player> player = await connection.QueryAsync<Player>("Select * from Employee where Id in @Id and Age =@Age",
+                new
+                {
+                    Id = new List<int> { 2, 13002 },
+                    Age = age
+                });
             return Ok(player);
         }
 

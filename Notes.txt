@@ -1,0 +1,15 @@
+1. In dapper, while querying a database, the  format is ("query", parameters)
+2. The parameters can be given as an object in a dictionary like manner.
+3.In PlayersController, GetPlayerById(int id) method uses an Id as an input
+	      var player = await connection.QueryAsync<Player>
+		  ("Select * from Employee where Id in @Id", new { Id = id });
+4. The same method, if we have to give multiple values for Id, can be written as
+	      IEnumerable<Player> player = await connection.QueryAsync<Player>
+		  ("Select * from Employee where Id in @Id", new { Id = new List<int> { 2, 13002 } });
+5. Similarly if the input has same values as a model, we can pass the model
+	       await connection.ExecuteAsync("Insert into Employee (Name,Department,Age,Address) 
+		   values (@Name , @Department, @Age, @Address)", player);
+
+		   where 'player' is a model with Name,Department,Age and Address
+
+
