@@ -1,4 +1,5 @@
 ﻿using Dapper;
+using DapperTest.Models;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
@@ -14,6 +15,7 @@ namespace DapperTest.Controllers
     [ApiController]
     public class PlayersController : ControllerBase
     {
+        //REFER NOTES.TXT FOR ALL NOTES REGARDING DAPPER
         private readonly IConfiguration _config;
 
         public PlayersController(IConfiguration config)
@@ -33,10 +35,23 @@ namespace DapperTest.Controllers
         public async Task<ActionResult<Player>> GetPlayerById(int id)
         {
             using var connection = new SqlConnection(_config.GetConnectionString("DefaultConnection"));
-            IEnumerable<Player> player = await connection.QueryAsync<Player>("Select * from Employee where Id in @Id and Age =@Age",
-                new { Id = id});
+            var player = await connection.QuerySingleOrDefaultAsync<Player>("Select * from Employee where Id = @Id",
+                new { Id = id }); //returns only a single row. Throws error when more than one row is returned.
             return Ok(player);
         }
+        [HttpGet("name")]
+        public async Task<ActionResult<Player>> GetPlayerByName(string name)
+        {
+            using var connection = new SqlConnection(_config.GetConnectionString("DefaultConnection"));
+            //returns only the first row. refer Notes.txt
+
+            //var player = await connection.QueryFirstAsync<Player>("Select * from Employee where Name = @Name",
+            //    new { Name = name });
+            var player = await connection.QueryFirstOrDefaultAsync<Player>("Select * from Employee where Name = @Name",
+                  new { Name = name });
+
+            return Ok(player);
+        }   
         [HttpGet("{id}/{age}")]
         public async Task<ActionResult<Player>> GetPlayerByIdAndAge(int id, int age)
         {
@@ -70,8 +85,10 @@ namespace DapperTest.Controllers
         public async Task<ActionResult<List<Player>>> DeletePlayer(int id)
         {
             using var connection = new SqlConnection(_config.GetConnectionString("DefaultConnection"));
-            await connection.ExecuteAsync("Delete from Employee where Id = @id", new { id = id});
+            connection.Open();
+            await connection.ExecuteAsync("Delete from Employee where Id = @id", new { id = id });
             return Ok(await SelectAllPlayers(connection));
+            connection.Close();
         }
 
 

@@ -13,3 +13,55 @@
 		   where 'player' is a model with Name,Department,Age and Address
 
 
+			QUERIES
+
+6. ExecuteScalar is Used when we have to return just a single value. like when the query returns a name, rowcount, sum,etc.
+	
+	*ExecuteScalar: Returns the first column of the first row as a dynamic type(an object)
+	*ExecuteScalar<T>: Returns the first column of the first row as a specified type
+	*ExecuteScalarAsync
+	*ExecuteScalarAsync<T>
+
+7.To query a single row of data we can use different methods:
+
+	*QuerySingle: returns only one row of dynamic type. Throws error when zero or more than one element is returned
+	*QuerySingle<T>: returns only one row of specified type. Throws error when zero or more than one element is returned
+	*QuerySingleAsync
+	*QuerySingleAsync<T>
+
+	*QuerySingleOrDefault: Use when zero or one row is expected.Throws error when more than one row is returned
+	*QuerySingleOrDefault<T>: Use when zero or one row is expected.Throws error when more than one row is returned
+	*QuerySingleOrDefaultAync
+	*QuerySingleOrDefaultAync<T>
+
+	*QueryFirst: Returns first row as dynamic type when there are more than one rows expected. Throws error when query returns zero elements
+	*QueryFirst<T>: Returns first row as Specified type when there are more than one rows expected. Throws error when query returns zero elements
+	*QueryFirstAsync
+	*QueryFirstAsync<T>
+
+	*QueryFirstOrDefault: Returns first row as dynamic type when there are more than one rows or zero rows expected. 
+	*QueryFirstOrDefault<T>: Returns first row as Specified type when there are more than one rows or zero rows  expected.
+	*QueryFirstOrDefaultAsync
+	*QueryFirstOrDefaultAsync<T>
+
+8. To query multiple rows of data we can use Query methods:
+
+	*Query: Returns an enumerable of dynamic type
+	*Query<T>: Returns an enumerable of specified type
+	*QueryAsync
+	*QueryAsync<T>
+
+9. To Use Multiple SQL queries (refer secondController)
+
+	*QueryMultiple: Execute multiple queries within a single DB and returns a GridReader to map the results
+	*QueryMultipleAsync
+
+	After using QueryMultiple we can use methods like Read<T>, ReadFirst<T>,ReadSingle<T>,etc. These Methods act like Query Methods of the same name
+
+10. To Query specific columns you can simply mention it in the query itself
+
+11
+
+
+
+
