@@ -48,7 +48,7 @@ namespace DapperTest.Controllers
             //var player = await connection.QueryFirstAsync<Player>("Select * from Employee where Name = @Name",
             //    new { Name = name });
             var player = await connection.QueryFirstOrDefaultAsync<Player>("Select * from Employee where Name = @Name",
-                  new { Name = name });
+                  new { name });
 
             return Ok(player);
         }   
@@ -85,10 +85,8 @@ namespace DapperTest.Controllers
         public async Task<ActionResult<List<Player>>> DeletePlayer(int id)
         {
             using var connection = new SqlConnection(_config.GetConnectionString("DefaultConnection"));
-            connection.Open();
-            await connection.ExecuteAsync("Delete from Employee where Id = @id", new { id = id });
+            await connection.ExecuteAsync("Delete from Employee where Id = @id", new { id });
             return Ok(await SelectAllPlayers(connection));
-            connection.Close();
         }
 
 

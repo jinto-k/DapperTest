@@ -60,7 +60,28 @@
 
 10. To Query specific columns you can simply mention it in the query itself
 
-11
+11. We can also run nonquery commands that does not return datasets for UPDATE,CREATE,DELETE.'
+
+	* Execute: takes sql query and parameters as arguments. Returns an Int representing the number of rows affected.
+	* ExecuteAsync:
+
+12. ExecuteReader Method is used to get instance of IDataReader as output.
+	
+	*ExecuteReader: params are sql,parameters, transaction(optional),commandTimeout(default 30s),commandType(SP,etc.).Gives finer control over data
+	*ExecuteReaderAsync:
+
+13. Using SP in Dapper: refer secondController
+	* we can use DynamicParameters to add the parameters required for the SP
+		eg: dynamicParameters.Add("Id", id,DbType.Int32);
+
+		* As far as I know, dynamicParameters.Get<int>("Id") can be used to get the value of a parameter inside the dynamicParameters
+
+
+	*  T result = await connection.QueryFirstOrDefaultAsync<T>("NameOfSP",dynamicParameters,commandType: CommandType.StoredProcedure);
+		
+
+		commandType is available as both Text and Stored Procedure. Text is the default
+
 
 
 
