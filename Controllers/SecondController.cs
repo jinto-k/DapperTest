@@ -64,8 +64,43 @@ namespace DapperTest.Controllers
             using var connection = new SqlConnection(_config.GetConnectionString("DefaultConnection"));
             DynamicParameters dynamicParameters = new DynamicParameters();
             dynamicParameters.Add("Id", id,DbType.Int32);
-            var value = dynamicParameters.Get<int>("Id");
+            dynamicParameters.Get<int>("Id"); //learn about Get method
             var result = await connection.QueryFirstOrDefaultAsync<Cricketer>("GetCricketerById",dynamicParameters,commandType: CommandType.StoredProcedure);
+            return Ok(result);
+        }
+
+        [HttpGet("name")]
+
+        public async Task<ActionResult<Cricketer>> GetCricketerByName(string name)
+        {
+            using var connection = new SqlConnection(_config.GetConnectionString("DefaultConnection"));
+            var sql = "Select * from Cricketers where Captain = @Name";
+            var param = new DbString() //The IsAnsi and IsFixedLength properties are used to determine the type of string we are using
+            {
+                Value = name,
+                IsAnsi = true,
+                IsFixedLength = true
+            };
+            var result = await connection.QueryFirstOrDefaultAsync<Cricketer>(sql, new {name});
+            return Ok(result);  
+
+        }
+
+        [HttpGet("table")]
+        public async Task<ActionResult<Cricketer>> GetCricketerUsingTable()
+        {
+            using var connection = new SqlConnection(_config.GetConnectionString("DefaultConnection"));
+
+            DataTable table = new DataTable();
+            table.Columns.Add("ID",typeof(int));
+            table.Columns.Add("Captain", typeof(string));
+
+            table.Rows.Add(1, "Dhoni");
+
+            DynamicParameters dynamicParameters = new DynamicParameters();
+            dynamicParameters.Add("GetTeam", table.AsTableValuedParameter("[dbo].[GetTeam]"));
+
+            var result = await connection.QueryFirstOrDefaultAsync<Cricketer>("GetTeamSP", dynamicParameters, commandType: CommandType.StoredProcedure);
             return Ok(result);
         }
 

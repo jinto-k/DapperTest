@@ -82,6 +82,51 @@
 
 		commandType is available as both Text and Stored Procedure. Text is the default
 
+14.In Daper, we can add parameters in two ways:
+	
+	*Anonymous parameters: IEnumerable<Player> player = await connection.QueryAsync<Player>("Select * from Employee where Id in @Id and Age =@Age",
+                new
+                {
+                    Id = new List<int> { 2, 13002 },
+                    Age = age
+                });
+
+	*Dynamic Parameters: var parameter = new DynamicParameters();
+										 parameter.Add("@Id", id, DbType.Int32)
+
+15. DynamicParamters class is used for adding dynamic parameters in Dapper:
+
+	*we can use the constructor to add parameters:
+								var dictionary = new Dictionary<string, object>
+												{
+													 { "@ProductId", 1 }
+												};
+								var parameters = new DynamicParameters(dictionary);
+
+	* we can also add anonymous types: var parameters = new DynamicParameters({ ProductId = 1 });
+
+	*Mainly we use Add method provided by the DynamicParameters class: var parameter = new DynamicParameters();
+																							parameter.Add("@Id", id, DbType.Int32)
+
+	* We can also use String parameters for further security purposes. Refer GetCricketerByName() in SecondController
+
+16. Table Valued Parameters can be used when we have to use UDT in the DB side
+
+	* Creating a table
+
+		DataTable tableFacilitationGroupParticipants = new(); //name of the table can be added inside paranthesis
+				tableFacilitationGroupParticipants.Columns.Add("FacilitationGroupId", typeof(int));
+				tableFacilitationGroupParticipants.Columns.Add("ParticipantId", typeof(int));
+
+	* Adding values to the created datatable:
+		
+		tableFacilitationGroupParticipants.Rows.Add(group.Id, participant.EmployeeID);
+
+	* Adding the table as a parameter:
+		
+		        parameters.Add("FacilitationGroupParticipants", tableFacilitationGroupParticipants.AsTableValuedParameter("[LD].[UDT_FAcilitationGroupParticipants]"));
+
+
 
 
 
