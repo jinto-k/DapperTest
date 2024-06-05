@@ -126,6 +126,31 @@
 		
 		        parameters.Add("FacilitationGroupParticipants", tableFacilitationGroupParticipants.AsTableValuedParameter("[LD].[UDT_FAcilitationGroupParticipants]"));
 
+17.We can also add output parameters to get the data from the sql. Refer second controller
+	
+	* In the SP we have to mention the output parameter
+
+	*While we are querying the data base also we have to specifically mention the output parameter.
+
+	*eg: ALTER PROCEDURE GetCricketerById  
+		(
+		    @Id INT,
+		    @Team NVARCHAR(50) OUTPUT
+		)  
+		AS  
+		BEGIN  
+			-- Set the @Team output parameter
+		 SELECT @Team = Team 
+		 FROM [dbo].[Cricketers] 
+		 WHERE Id = @Id;
+		END
+
+	*On the code side we have to add the parameter to the dynamicparameter and give it value of null and direction as output. also Type is mentioned
+		            dynamicParameters.Add("Team", null, DbType.String, direction: ParameterDirection.Output, 50);
+
+	*This output parameter will then be added to the dynamicparameters and can be accessed with the Get method.
+					dynamicParameters.Get<string>("Team");
+
 
 
 

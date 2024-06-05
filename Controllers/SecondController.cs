@@ -63,9 +63,10 @@ namespace DapperTest.Controllers
         {
             using var connection = new SqlConnection(_config.GetConnectionString("DefaultConnection"));
             DynamicParameters dynamicParameters = new DynamicParameters();
-            dynamicParameters.Add("Id", id,DbType.Int32);
-            dynamicParameters.Get<int>("Id"); //learn about Get method
-            var result = await connection.QueryFirstOrDefaultAsync<Cricketer>("GetCricketerById",dynamicParameters,commandType: CommandType.StoredProcedure);
+            dynamicParameters.Add("Id", id, DbType.Int32);
+            dynamicParameters.Add("Team", null, DbType.String, direction: ParameterDirection.Output, 50);
+            var result = await connection.QueryAsync<Cricketer>("GetCricketerById", dynamicParameters, commandType: CommandType.StoredProcedure);
+            _ = dynamicParameters.Get<string>("Team"); //learn about Get method
             return Ok(result);
         }
 
