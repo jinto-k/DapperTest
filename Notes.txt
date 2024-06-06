@@ -151,6 +151,28 @@
 	*This output parameter will then be added to the dynamicparameters and can be accessed with the Get method.
 					dynamicParameters.Get<string>("Team");
 
+18.Spliton: We can query multiple tables and map it using dapper by using spliton parameter
+
+	* eg code snippet
+
+		var result = await connection.QueryAsync<Cricketer, InternationalTeam, Cricket>(sql, (cricketer, internationalTeam) =>
+                         {
+                             Cricket cricket = new Cricket()
+                             {
+                                 Cricketer = cricketer,
+                                 InternationalTeam = internationalTeam
+                             };
+                             return cricket;
+                         },splitOn: "Name");
+
+	*We can use the QueryAsync method with input types and expected type for this purpose. Here in QueryAsync<Cricketer, InternationalTeam, Cricket>
+	 Crickters and InternationalTeam are input parameters and Cricket is the output parameter.
+
+	*After the sql query,a lambda function is used to map the values into different types. The input parameters of the lambda function are dependent on
+	 the types mentioned in QueryAsync method. Here, since 2 input types are specified, the lambda function also has 2 parameters.
+
+	*Then the  values are mapped as shown above.
+
 
 
 

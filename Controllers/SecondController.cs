@@ -31,8 +31,8 @@ namespace DapperTest.Controllers
                         Select * from Employee
                       ";
             var multi = await connection.QueryMultipleAsync(sql);
-            IEnumerable<Cricketer> cricketers = multi.Read<Cricketer>();
-            Player player = multi.ReadFirst<Player>();
+            IEnumerable<Cricketer> cricketers = await multi.ReadAsync<Cricketer>();
+            Player player = await multi.ReadFirstAsync<Player>();
             return  Ok(cricketers);
         }
         [HttpGet("get-all-cricketers")]
@@ -82,7 +82,7 @@ namespace DapperTest.Controllers
                 IsAnsi = true,
                 IsFixedLength = true
             };
-            var result = await connection.QueryFirstOrDefaultAsync<Cricketer>(sql, new {name});
+            var result = await connection.QueryFirstOrDefaultAsync<Cricketer>(sql, new {Name= param.Value});
             return Ok(result);  
 
         }
@@ -105,5 +105,22 @@ namespace DapperTest.Controllers
             return Ok(result);
         }
 
+        [HttpGet("split")]
+        public async Task<ActionResult<IEnumerable<Cricket>>> GetCricketUsingSplit()
+        {
+            using var connection = new SqlConnection(_config.GetConnectionString("DefaultConnection"));
+            var sql = "Select c.id, c.Team,c.captain,e.Name,e.id,e.captain From [dbo].[Cricketers] c Join [dbo].[InternationalTeams] e on c.Id = e.id";
+            var result = await connection.QueryAsync<Cricketer, InternationalTeam, Cricket>(sql, (cricketer, internationalTeam) =>
+                         {
+                             Cricket cricket = new Cricket()
+                             {
+                                 Cricketer = cricketer,
+                                 InternationalTeam = internationalTeam
+                             };
+                             return cricket;
+                         },splitOn: "Name");
+            return Ok(result);
+
+        }
     }
 }
