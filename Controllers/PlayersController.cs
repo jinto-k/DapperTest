@@ -72,12 +72,19 @@ namespace DapperTest.Controllers
             await connection.ExecuteAsync("Insert into Employee (Name,Department,Age,Address) values (@Name , @Department, @Age, @Address)", player);
             return Ok(await SelectAllPlayers(connection));
         }
+        [HttpPost("CreateMultiple")]
+        public async Task<IActionResult> CreateMultiplePlayers(List<Player> players)
+        {
+            using var connection = new SqlConnection(_config.GetConnectionString("DefaultConnection"));
+            var result = await connection.ExecuteAsync("Insert into Employee (Name,Department,Age,Address) values (@Name , @Department, @Age, @Address)", players   );
+            return Ok(result);
+        }
 
         [HttpPut("Update")]
         public async Task<ActionResult<List<Player>>> UpdatePlayer(Player player)
         {
             using var connection = new SqlConnection(_config.GetConnectionString("DefaultConnection"));
-            await connection.ExecuteAsync("Update Employee set Name = @Name, Department = @Department,Age= @Age,Address = @Address where Id = @Id", player);
+            await connection.ExecuteAsync("Update Employee set Name = @Name, Department = @Department,Age= @Age,Address = @Address where Id = @Id", player).ConfigureAwait(false);
             return Ok(await SelectAllPlayers(connection));
         }
 

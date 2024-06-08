@@ -173,6 +173,15 @@
 
 	*Then the  values are mapped as shown above.
 
+19.Inheritance in Dapper:
+	
+	*Table per Hierarchy: That involves putting all the fields for each type into a single table and then using a discriminator field to distinguish between the different types.
+						  The discriminator field can be a single column with an enumeration or multiple columns forming a unique identifier for each type.
+
+	* Table Per Type: each type has its table with only the fields for that particular type
+
+	* Table per Class:a separate table for each concrete class and storing all its fields in that table.
+
 
 
 
