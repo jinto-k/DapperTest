@@ -180,7 +180,7 @@
 
 	* Table Per Type: each type has its table with only the fields for that particular type
 
-	* Table per Class:a separate table for each concrete class and storing all its fields in that table. 
+	* Table Per Class:a separate table for each concrete class and storing all its fields in that table. 
 
 
 
